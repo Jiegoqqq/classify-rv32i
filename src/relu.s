@@ -29,10 +29,9 @@ relu:
 
 loop_start:
     # TODO: Add your own implementation
-    beq t1 , a1, loop_end # for t1 from 0 to a1-1
+    beq t1 , a1, loop_end               # for t1 from 0 to a1-1
     # Load value every 4 bytes
-    addi t2, x0, 2 # one number has 4 bytes (sizeof(int))
-    sll t3, t1, t2
+    slli t3, t1, 2                      # one number has 4 bytes (sizeof(int))
     add t2, t3, a0 
     lw t4, 0(t2)
     

@@ -116,8 +116,8 @@ inner_loop_start:
     
 inner_loop_end:
     # TODO: Add your own implementation
-    addi s0, s0, 1
-    slli t2, a2, 2
+    addi s0, s0, 1          # update outer loop counter
+    slli t2, a2, 2          # change m0 to next row 
     add a0, s3, t2
     mv s3, a0
 
@@ -126,6 +126,7 @@ inner_loop_end:
 outer_loop_end:
     
     # Epilogue
+
     #Restore sp status
     lw ra, 0(sp)
     lw s0, 4(sp)

@@ -30,8 +30,8 @@ argmax:
     li t1, 0 #counter to end
     li t2, 1  
     
-    slli t2, t2, 1 #set t2=2
-    add t3, x0, x0 #set t3 to record maximum index
+    slli t2, t2, 1                  # set t2=2
+    add t3, x0, x0                  # set t3 to record maximum index
     
 loop_start:
     beq t1, a1, loop_end
@@ -40,15 +40,15 @@ loop_start:
     lw t5, 0(t4)
     
     ble t5, t0, loop_continue
-    mv t0, t5 #update the maximum value
-    mv t3, t1 #update the maximum index
+    mv t0, t5                       # update the maximum value
+    mv t3, t1                       # update the maximum index
     
 loop_continue:
     addi t1, t1, 1
     j loop_start
 
 loop_end:
-    mv a0, t3  # return the maximum index
+    mv a0, t3                       # return the maximum index
     
     ret
     

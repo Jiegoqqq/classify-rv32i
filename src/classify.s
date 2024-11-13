@@ -166,7 +166,19 @@ classify:
     
     lw t0, 0(s3)
     lw t1, 0(s8)
-    # mul a0, t0, t1 # FIXME: Replace 'mul' with your own implementation
+    
+    #mul a0, t0, t1 # FIXME: Replace 'mul' with your own implementation
+    addi sp, sp, -8         
+    sw a1, 0(sp)            
+    sw a2, 4(sp)     
+    mv a1, t0
+    mv a2, t1
+    jal multiply
+
+    lw a1, 0(sp)               
+    lw a2, 4(sp)               
+    addi sp, sp, 8 
+    
     slli a0, a0, 2
     jal malloc 
     beq a0, x0, error_malloc
@@ -203,9 +215,22 @@ classify:
     mv a0, s9 # move h to the first argument
     lw t0, 0(s3)
     lw t1, 0(s8)
-    # mul a1, t0, t1 # length of h array and set it as second argument
-    # FIXME: Replace 'mul' with your own implementation
     
+    #mul a1, t0, t1 # length of h array and set it as second argument
+    # FIXME: Replace 'mul' with your own implementation
+    addi sp, sp, -8         
+    sw a0, 0(sp)  
+    #sw a1. 4(sp)          
+    sw a2, 4(sp)     
+    mv a1, t0
+    mv a2, t1
+    jal multiply
+    mv a1, a0
+    lw a0, 0(sp) 
+    #lw a1, 4(sp)             
+    lw a2, 4(sp)               
+    addi sp, sp, 8 
+
     jal relu
     
     lw a0, 0(sp)
@@ -226,7 +251,19 @@ classify:
     
     lw t0, 0(s3)
     lw t1, 0(s6)
-    # mul a0, t0, t1 # FIXME: Replace 'mul' with your own implementation
+    
+    #mul a0, t0, t1 # FIXME: Replace 'mul' with your own implementation
+    addi sp, sp, -8         
+    sw a1, 0(sp)            
+    sw a2, 4(sp)     
+    mv a1, t0
+    mv a2, t1
+    jal multiply
+
+    lw a1, 0(sp)               
+    lw a2, 4(sp)               
+    addi sp, sp, 8 
+    
     slli a0, a0, 2
     jal malloc 
     beq a0, x0, error_malloc
@@ -286,8 +323,20 @@ classify:
     mv a0, s10 # load o array into first arg
     lw t0, 0(s3)
     lw t1, 0(s6)
-    mul a1, t0, t1 # load length of array into second arg
+    
+    #mul a1, t0, t1 # load length of array into second arg
     # FIXME: Replace 'mul' with your own implementation
+    addi sp, sp, -8         
+    sw a0, 0(sp)            
+    sw a2, 4(sp)     
+    mv a1, t0
+    mv a2, t1
+    jal multiply
+    mv a1, a0
+    
+    lw a0, 0(sp)               
+    lw a2, 4(sp)               
+    addi sp, sp, 8 
     
     jal argmax
     
@@ -384,3 +433,37 @@ error_args:
 error_malloc:
     li a0, 26
     j exit
+
+# =======================================================
+#multiply function
+#Input 
+#        a1: multiplicand
+#        a2: multiplier
+#Output 
+#        a0: multiplication result
+# =======================================================
+
+multiply:
+    addi sp, sp, -8          # Allocate stack space
+    sw t0, 0(sp)              # Save t0 to stack
+    sw t1, 4(sp)              # Save t1 to stack
+    li      t0, 0             # result
+multiply_loop:
+    andi    t1, a2, 1         # check if the LSB of a2 is 1
+    beqz    t1, skip_add      # skip if LSB is zero
+    add     t0, t0, a1        # add multiplicand to result
+
+skip_add:
+    slli    a1, a1, 1         # left shift multiplicand
+    srli    a2, a2, 1         # right shift multiplier
+    bnez    a2, multiply_loop # repeat if multiplier is not zero
+
+    mv a0, t0                 # set a0 as the answer
+
+    lw t0, 0(sp)              # Restore t0 from stack
+    lw t1, 4(sp)              # Restore t1 from stack
+    addi sp, sp, 8           # Deallocate stack space
+
+    ret                        # Return from function
+
+# =======================================================

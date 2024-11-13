@@ -76,7 +76,11 @@ read_matrix:
 
     # mul s1, t1, t2   # s1 is number of elements
     # FIXME: Replace 'mul' with your own implementation
-
+    #use the multiply.s
+    mv a1, t1
+    mv a2, t2
+    jal multiply
+    mv s1, a0
     slli t3, s1, 2
     sw t3, 24(sp)    # size in bytes
 
@@ -108,6 +112,7 @@ read_matrix:
     mv a0, s2
 
     # Epilogue
+
     lw ra, 0(sp)
     lw s0, 4(sp)
     lw s1, 8(sp)
@@ -143,3 +148,37 @@ error_exit:
     lw s4, 20(sp)
     addi sp, sp, 40
     j exit
+
+# =======================================================
+#multiply function
+#Input 
+#        a1: multiplicand
+#        a2: multiplier
+#Output 
+#        a0: multiplication result
+# =======================================================
+
+multiply:
+    addi sp, sp, -8          # Allocate stack space
+    sw t0, 0(sp)              # Save t0 to stack
+    sw t1, 4(sp)              # Save t1 to stack
+    li      t0, 0             # result
+multiply_loop:
+    andi    t1, a2, 1         # check if the LSB of a2 is 1
+    beqz    t1, skip_add      # skip if LSB is zero
+    add     t0, t0, a1        # add multiplicand to result
+
+skip_add:
+    slli    a1, a1, 1         # left shift multiplicand
+    srli    a2, a2, 1         # right shift multiplier
+    bnez    a2, multiply_loop # repeat if multiplier is not zero
+
+    mv a0, t0                 # set a0 as the answer
+
+    lw t0, 0(sp)              # Restore t0 from stack
+    lw t1, 4(sp)              # Restore t1 from stack
+    addi sp, sp, 8           # Deallocate stack space
+
+    ret                        # Return from function
+
+# =======================================================

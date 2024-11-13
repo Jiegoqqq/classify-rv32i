@@ -22,7 +22,7 @@ abs:
     bge t0, zero, done
 
     # TODO: Add your own implementation
-    neg t0, t0
+    neg t0, t0           #Negate the number
     sw t0, 0(a0)
 done:
     # Epilogue
