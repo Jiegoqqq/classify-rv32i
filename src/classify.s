@@ -219,15 +219,13 @@ classify:
     #mul a1, t0, t1 # length of h array and set it as second argument
     # FIXME: Replace 'mul' with your own implementation
     addi sp, sp, -8         
-    sw a0, 0(sp)  
-    #sw a1. 4(sp)          
+    sw a0, 0(sp)         
     sw a2, 4(sp)     
     mv a1, t0
     mv a2, t1
     jal multiply
     mv a1, a0
-    lw a0, 0(sp) 
-    #lw a1, 4(sp)             
+    lw a0, 0(sp)            
     lw a2, 4(sp)               
     addi sp, sp, 8 
 
